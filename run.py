@@ -1,11 +1,13 @@
 import os, argparse
 from src.gluefile import gluefile
 from src.clean import clean
+from src.s3 import upload_all
 
 
 class Processor:
     gluefile = 'gluefile'
     clean = 'clean'
+    upload = 'upload'
 
     @classmethod
     def run(cls, option):
@@ -13,6 +15,8 @@ class Processor:
             gluefile()
         elif option == cls.clean:
             clean()
+        elif option == cls.upload:
+            upload_all()
 
 
 if __name__ == "__main__":

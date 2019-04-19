@@ -81,8 +81,8 @@ class Gluefy(object):
                 print(str(e))
 
     def run(self):
-        # s3 = S3Manager()
-        # s3.download_all_files(download_path=self.path_to_files)
+        s3 = S3Manager()
+        s3.download_all_files(download_path=self.path_to_files)
 
         for file in os.listdir(self.path_to_files):
             if file.endswith('.csv'):

@@ -68,7 +68,10 @@ class S3Manager:
         for file in os.listdir(current_path):
             if file.endswith('.csv'):
                 if filename:
-                    upload_filename = "%s_%d.csv" % ('.'.join(filename.split('.')[:-1]), file_index)
+                    if file_index > 0:
+                        upload_filename = "%s_%d.csv" % ('.'.join(filename.split('.')[:-1]), file_index)
+                    else:
+                        upload_filename = "%s.csv" % ('.'.join(filename.split('.')[:-1]))
                 else:
                     upload_filename = file
                 try:

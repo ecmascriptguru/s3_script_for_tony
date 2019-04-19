@@ -1,5 +1,6 @@
 """Utilities
 """
+import re
 
 def clean_string(string):
     return ''.join(e for e in string.lower() if e.isalnum())

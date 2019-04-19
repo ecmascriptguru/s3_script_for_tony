@@ -1,18 +1,16 @@
 # encoding=utf-8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-from os import listdir
-from os.path import isfile, join
+import sys, os
 import argparse
 import csv
+from config import Config
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--column_name", type=str, help="the base")
 parser.add_argument("--column_value", type=str, help="the base")
 args = parser.parse_args()
 
-path_to_files = 'initial_files/'
+path_to_files = Config.DOWNLOAD_FILES_PATH
 headers_set = []
 
 def clean_string(string):
@@ -48,27 +46,34 @@ def data_set_generator(row):
     return data_set
 
 def write_header():
-    with open('merged/merged_file.csv', 'w') as csvfile:
+    with open(os.path.join(Config.MERGED_FILES_PATH, 'merged_file.csv'), 'w') as csvfile:
         writer = csv.DictWriter(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL, fieldnames=headers_set)
         writer.writeheader()
 
 def write_data(row):
-    with open('merged/merged_file.csv', 'a+') as csvfile:
+    with open(os.path.join(Config.MERGED_FILES_PATH, 'merged_file.csv'), 'a+') as csvfile:
         writer = csv.DictWriter(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL, fieldnames=headers_set)
         writer.writerow(data_set_generator(row))
         
-def processing(file):
-    with open(file) as csvfile:
+def processing(file, encoding='utf-8'):
+    with open(file, encoding=encoding) as csvfile:
         csv_reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
-        for row in csv_reader:
-            write_data(row)
+        try:
+            for row in csv_reader:
+                write_data(row)
+        except Exception as e:
+            print("Exception found in %s. Retrying..." % encoding)
+            try:
+                processing(file, encoding='latin')
+            except Exception as e:
+                print(str(e))
 
 
 if __name__ == '__main__':
 
-    for file in listdir(path_to_files):
+    for file in os.listdir(path_to_files):
         if '.csv' in file:
-            setup_headers(path_to_files + file)
+            setup_headers(os.path.join(path_to_files, file))
 
     if args.column_name != None and args.column_value != None:
         custom_header = clean_string(args.column_name)
@@ -77,7 +82,7 @@ if __name__ == '__main__':
 
     write_header()
 
-    for file in listdir(path_to_files):
+    for file in os.listdir(path_to_files):
         if '.csv' in file:
-            processing(path_to_files + file)
+            processing(os.path.join(path_to_files, file))
 

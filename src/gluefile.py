@@ -27,11 +27,25 @@ class Gluefy(object):
                 self.headers_set.append(clean_header)
 
     def setup_headers(self, file):
-        with open(file) as csvfile:
-            csv_reader = csv.reader(csvfile, delimiter=',', quotechar='"')
-            for row in csv_reader:
-                self.glue_headers(row)
-                break
+        try:
+            with open(file) as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                for row in csv_reader:
+                    self.glue_headers(row)
+                    break
+        except Exception as e:
+            self.setup_header_in_latin(file)
+
+    def setup_header_in_latin(self, file):
+        try:
+            with open(file, encoding=ENCODING_TYPES.latin) as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                for row in csv_reader:
+                    self.glue_headers(row)
+                    break
+        except Exception as e:
+            print(str(e))
+            raise Exception("Failed to setup header")
 
     def data_set_generator(self, row):
         data_set = {}

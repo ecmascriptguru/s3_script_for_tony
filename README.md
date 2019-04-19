@@ -55,4 +55,23 @@ Just specify what you want to do as following
 ```
 $ python run.py gluefile --column_name=new_column --column_value=new_value
 ```
-Then the script will download all of files 
+Then the script will download all of files from s3 to `storage/downloads` folder within this project root folder and do what it has to do like adding new column, merging them and create a file in `storage/merged` folder.
+
+### Cleaning
+Sometimes, you might need to clean the merged files multiple times. 
+For instance, you may need to clean email, phone and string cleaning.
+```
+$ python run.py clean --column_name=email --clean_type=email
+$ python run.py clean --column_name=phone --clean_type=phone
+$ python run.py clean --column_name=company --clean_type=string
+```
+
+### Uploading
+Once you finished, you can upload all of files from `storage/cleans` folder or `storage/merged` folder to specified target bucket's path of AWS S3. Examples are shown below.
+```
+python run.py upload
+python run.py upload --filename=result
+python run.py upload --filename=result.csv
+python run.py upload --filename=result --bucket=bucket_name
+python run.py upload --filename=result --bucket=bucket_name --path=destination/path
+```

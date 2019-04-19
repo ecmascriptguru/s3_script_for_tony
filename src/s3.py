@@ -18,22 +18,27 @@ class S3Manager:
             aws_secret_access_key=Config.AWS_SECRET_KEY)
         
 
-    def download_all_files(self, folder_path=Config.AWS_SOURCE_FOLDER_PATH):
+    def download_all_files(
+            self,
+            aws_folder_path=Config.AWS_SOURCE_FOLDER_PATH, 
+            download_path=Config.DOWNLOAD_FILES_PATH):
         """Download all of *.csv files from sepcific folder of given S3 bucket.
-        - folder_path: optional
+        - aws_folder_path: optional
+        - download_path: optional
         folder path will be taken from config.py unless given
         """
         source_bucket = self.resource.Bucket(Config.AWS_SOURCE_BUCKET)
-        for obj in source_bucket.objects.filter(Prefix=folder_path):
+        for obj in source_bucket.objects.filter(Prefix=aws_folder_path):
             if obj.key.endswith('.csv'):
                 file_name = obj.key.split('/')[-1]
-                source_bucket.download_file(obj.key, os.path.join(Config.DOWNLOAD_FILES_PATH, file_name))
+                source_bucket.download_file(obj.key, os.path.join(download_path, file_name))
 
     def upload_all_files(
-            self, folder_path=Config.AWS_DESTINATION_FOLDER_PATH, file_name=None):
+            self, 
+            aws_folder_path=Config.AWS_DESTINATION_FOLDER_PATH, file_name=None):
         """Upload all csv files existing in merged folder to specified folder 
         of the given destination s3 bucket
-        - folder_path: optional, s3 bucket path
+        - aws_folder_path: optional, s3 bucket path
         - file_name: optional, default name of files uploading to s3 bucket
         """
         target_bucket = self.resource.Bucket(Config.AWS_DESTINATION_BUCKET)

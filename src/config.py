@@ -39,3 +39,6 @@ class Config(object):
 for key in ENV_JSON:
     if hasattr(Config, key):
         setattr(Config, key, ENV_JSON[key])
+
+if __name__ == "__main__":
+    pass

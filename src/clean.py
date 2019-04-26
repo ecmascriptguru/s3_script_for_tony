@@ -93,6 +93,19 @@ def clean():
     cleaner.run()
 
 
+def delete_all_files():
+    count = 0
+    for folder in [Config.DOWNLOAD_FILES_PATH, Config.MERGED_FILES_PATH, Config.CLEANED_FILES_PATH]:
+        for file in os.listdir(folder):
+            if file.endswith('.csv'):
+                try:
+                    os.remove(os.path.join(folder, file))
+                    count += 1
+                except Exception as e:
+                    print(str(e))
+    
+    print("%d file(s) successfully deleted from disk." % count)
+
 
 if __name__ == '__main__':
     clean()
